@@ -3,14 +3,14 @@
 
 This repo currently includes the following documents:
 
-- `XAI_Course_2024_OJPV.pdf`: slides for the XAI course
+- `XAI_Course_2025_OJPV.pdf`: slides for the XAI course, updated for 2025
 - `Captum_Quantus_Tutorial.ipynb`: a tutorial on using Captum and Quantus
 
 I also propose three new (although not particularly intersting) attribution methods:
 
 - `TiledOcclusion` is a simple attribution method built upon standard Occlusion and implemented using Captum's interface.
 - `FusionGrad` is an implementation of [FusionGrad](https://github.com/understandable-machine-intelligence-lab/NoiseGrad), that more closely follows Captum's interface.
- - `ContrastiveAttribution` computes the attribution of the selected output feature minus the average of all other output features
+- `ContrastiveAttribution` computes the attribution of the selected output feature minus the average of all other output features
 
 ## Installation
 
@@ -20,7 +20,7 @@ You can install directly using pip:
 pip install git+https://github.com/OscarPellicer/extra-attributions.git
 ```
 
-Or for development, clone the repository and install in editable mode:
+But it is recommended to install it for development: clone the repository and install in editable mode:
 
 ```{bash}
 git clone https://github.com/OscarPellicer/extra-attributions.git
@@ -87,18 +87,17 @@ And using TiledOcclusion:
 ![Using TiledOcclusion](https://github.com/OscarPellicer/tiled_occlusion/blob/main/media/tiled_occlusion_3.png)
 ![Using TiledOcclusion](https://github.com/OscarPellicer/tiled_occlusion/blob/main/media/tiled_occlusion_4b.png) -->
 
-
 The idea of the method is to combine the power of bigger occlusion patches while obtaining a high resolution smoother occlusion map, by adding occlusion results from several slightlhy shifted versions of the same input image. If you are using this repository and need more info on the method, open an issue and I will try to improve this description. `TiledOcclusion` generally produces smoother results than `Occlusion` (specially at higher resolutions) which also are better aligned with our intution for how attributions should behave.
 
-See `Attribution_tests.ipynb` for an example of how to use the method.
+See `Captum_Quantus_Tutorial.ipynb` for an example of how to use the method.
 
 ## FusionGrad
 
-A Captum interface to FusionGrad. See `Attribution_tests.ipynb` for an example of how to use `FusionGrad`, and the `README.md` in the [NoiseGrad repo](https://github.com/understandable-machine-intelligence-lab/NoiseGrad) for more details on the method.
+A Captum interface to FusionGrad. See `Captum_Quantus_Tutorial.ipynb` for an example of how to use `FusionGrad`, and the `README.md` in the [NoiseGrad repo](https://github.com/understandable-machine-intelligence-lab/NoiseGrad) for more details on the method.
 
 ## ContrastiveAttribution
 
-It takes any attribution method, and computes the attribution of the selected output feature minus the average of all other output features (or just one, if given as input parameter). It does so by wrapping the model, and hence it is as efficient as computing a standard attribution. See `Attribution_tests.ipynb` for an example of how to use.
+It takes any attribution method, and computes the attribution of the selected output feature minus the average of all other output features (or just one, if given as input parameter). It does so by wrapping the model, and hence it is as efficient as computing a standard attribution. See `Captum_Quantus_Tutorial.ipynb` for an example of how to use.
 
 ## Citing
 
