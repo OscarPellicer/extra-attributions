@@ -4,7 +4,7 @@
 This repo currently includes the following documents:
 
 - `XAI_Course_2025_OJPV.pdf`: slides for the XAI course, updated for 2025
-- `Captum_Quantus_Tutorial.ipynb`: a tutorial on using Captum and Quantus
+- `Captum_Quantus_Tutorial.ipynb`: a tutorial on using Captum and Quantus <a href="https://colab.research.google.com/github/OscarPellicer/extra-attributions/blob/main/Captum_Quantus_Tutorial.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 I also propose three new (although not particularly intersting) attribution methods:
 
