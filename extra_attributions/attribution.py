@@ -39,13 +39,15 @@ class TiledOcclusion(Occlusion):
             f'All elements in {window=} must be divisible by the elements in {k=}'
 
         #Create expanded tensors
-        occ_shapes= [input.shape[0]] + [ii + (wi//ki if ki > 1 else 0) for ii, wi, ki in zip(input.shape[1:], window, k)]
-        padded_indexer= [slice(None)] + [slice(wi//ki if ki > 1 else 0, None) for wi, ki in zip(window, k)]
+        #The shifted grids go up to (k-1)*window/k pixels, so pad by that amount (w/k before, the rest after)
+        occ_shapes= [input.shape[0]] + [ii + (wi//ki*(ki-1) if ki > 1 else 0) for ii, wi, ki in zip(input.shape[1:], window, k)]
+        padded_indexer= [slice(None)] + [slice(wi//ki if ki > 1 else 0, (wi//ki if ki > 1 else 0) + ii)
+                                         for ii, wi, ki in zip(input.shape[1:], window, k)]
 
         attributions_occ= torch.zeros(*occ_shapes).to(input.device)
         padded_input= torch.clone(attributions_occ)
         #Equivalent to: padded_input[*padded_indexer]= input, but we are not allowed to use * when indexing
-        padded_input.__setitem__(padded_indexer, input)
+        padded_input.__setitem__(tuple(padded_indexer), input)
 
         #Iterate over all dimensions. We will use product() which creates nested loops
         k_ext= [1] * (4 - len(k)) + list(k) #Extend k
@@ -54,12 +56,12 @@ class TiledOcclusion(Occlusion):
         for indices in iterator:
             shifted_indexer= [slice(None)] + [slice(wi//ki*index, ii + wi//ki*index) for ii, wi, ki, index in 
                                                     list(zip(input.shape[1:], window, k, indices[4-len(k):]))]
-            shifted_input= padded_input.__getitem__(shifted_indexer)
+            shifted_input= padded_input.__getitem__(tuple(shifted_indexer))
             attr = super().attribute(shifted_input, strides=tuple([int(w) for w in window]), target=target,
                                      sliding_window_shapes=tuple([int(w) for w in window]), baselines=baselines, **occ_kwargs)
             #Equivalent to: attributions_occ[*shifted_indexer]+= attr
-            attributions_occ.__setitem__(shifted_indexer, attributions_occ.__getitem__(shifted_indexer) + attr)
-        return attributions_occ.__getitem__(padded_indexer)
+            attributions_occ.__setitem__(tuple(shifted_indexer), attributions_occ.__getitem__(tuple(shifted_indexer)) + attr)
+        return attributions_occ.__getitem__(tuple(padded_indexer))
     
 class FusionGrad:
     def __init__(self, attribution_method, model=None):
@@ -102,7 +104,9 @@ class FusionGrad:
         assert not isinstance(input, tuple), 'At the moment, having tuples of tensors as input is not supported'
         with torch.no_grad():
             explanation = torch.zeros(n, m, *input.shape)
-            original_weights = self.model.state_dict().copy()
+            # Deep-copy the weights: state_dict() tensors share storage with the parameters,
+            # so a shallow dict copy would be modified in-place by the noise below
+            original_weights = {k: v.detach().clone() for k, v in self.model.state_dict().items()}
         
             #if std > 0.: 
                 #self._distribution = torch.distributions.normal.Normal(loc=mean, scale=std)
@@ -150,8 +154,13 @@ class ContrastiveAttribution:
         # Create wrapper model that computes difference between target and negative_target
         self.wrapper_model = self._create_difference_model()
         
-        # Create new attribution method instance with wrapped model
-        self.attribution_method.model= self.wrapper_model
+        # Make the attribution method (and any wrapped method, e.g. inside NoiseTunnel)
+        # use the wrapped model: Captum methods call `forward_func`, not `model`
+        method = self.attribution_method
+        while method is not None:
+            if hasattr(method, 'forward_func'):
+                method.forward_func = self.wrapper_model
+            method = getattr(method, 'attribution_method', None)
 
     def _create_difference_model(self):
         """Creates a wrapper model that returns the difference between two class outputs"""
@@ -191,5 +200,4 @@ class ContrastiveAttribution:
         self.wrapper_model.negative_target = negative_target
         
         # The wrapped attribution method now computes gradients for the difference
-        return self.attribution_method.attribute(input, target=0, *args, **kwargs)
         return self.attribution_method.attribute(input, target=0, *args, **kwargs)

@@ -1,0 +1,32 @@
+# Requirements for the course notebooks in notebooks/ (install the package itself with `pip install -e .`)
+# Tested with Python 3.11 on macOS arm64 (CPU / Apple MPS): numpy 2.4.6, pandas 3.1.0, matplotlib 3.11.2,
+# scikit-learn 1.9.1, xgboost 3.2.0, shap 0.51.0, lime 0.2.0.1, dice-ml 0.12, torch 2.15.0, torchvision 0.29.2,
+# captum 0.9.0, quantus 0.6.0, transformer-lens 3.9.0, sae-lens 6.54.12.
+# macOS: the xgboost wheel needs OpenMP (`brew install libomp`, or `conda install -c conda-forge llvm-openmp`)
+
+# Common
+numpy>=1.24
+scipy>=1.10
+pandas>=2.0
+matplotlib>=3.8
+pillow>=10.0
+tqdm
+jupyter
+
+# 01_tabular_xai
+scikit-learn>=1.4
+xgboost>=3.2.0
+shap>=0.51.0
+lime>=0.2.0.1
+dice-ml>=0.12
+
+# 02_dl_attributions
+torch>=2.2
+torchvision>=0.17
+captum>=0.9.0
+quantus>=0.6.0
+lovely-tensors>=0.1.15
+
+# 03_llm_interpretability
+transformer-lens>=2.0
+sae-lens>=6.0

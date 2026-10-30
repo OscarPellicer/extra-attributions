@@ -1,10 +1,29 @@
 # extra-attributions
 
 
-This repo currently includes the following documents:
+## XAI course materials (2026)
 
-- `XAI_Course_2025_OJPV.pdf`: slides for the XAI course, updated for 2025
-- `Captum_Quantus_Tutorial.ipynb`: a tutorial on using Captum and Quantus <a href="https://colab.research.google.com/github/OscarPellicer/extra-attributions/blob/main/Captum_Quantus_Tutorial.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+Slides and hands-on notebooks for the course *Explainability in AI Systems*:
+
+- `XAI_Course_2026_OJPV.pdf`: slides for the XAI course, updated for 2026
+- `notebooks/01_tabular_xai.ipynb`: glass-box baseline, permutation importance, PDP/ICE, LIME, SHAP (TreeSHAP vs KernelSHAP) and counterfactuals (DiCE) on California housing <a href="https://colab.research.google.com/github/OscarPellicer/extra-attributions/blob/main/notebooks/01_tabular_xai.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+- `notebooks/02_dl_attributions.ipynb`: attributions for an ImageNet CNN with Captum (Saliency, IG, SmoothGrad, Grad-CAM, Occlusion, LRP), sanity checks, evaluation with Quantus, and contrastive explanations <a href="https://colab.research.google.com/github/OscarPellicer/extra-attributions/blob/main/notebooks/02_dl_attributions.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+- `notebooks/03_llm_interpretability.ipynb`: looking inside GPT-2 small with TransformerLens and SAELens: logit lens, linear probes, sparse autoencoder features and feature steering <a href="https://colab.research.google.com/github/OscarPellicer/extra-attributions/blob/main/notebooks/03_llm_interpretability.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+
+The notebooks run on Google Colab (use the badges; a GPU runtime is recommended for notebooks 2 and 3) or locally on CUDA, Apple MPS or CPU:
+
+```bash
+git clone https://github.com/OscarPellicer/extra-attributions.git
+cd extra-attributions
+pip install -r requirements.txt
+pip install -e .
+```
+
+On macOS, XGBoost needs OpenMP: `brew install libomp` (or `conda install -c conda-forge llvm-openmp`).
+
+Previous materials: `XAI_Course_2025_OJPV.pdf` (2025 slides) and `Captum_Quantus_Tutorial.ipynb` (2025 tutorial on Captum and Quantus) <a href="https://colab.research.google.com/github/OscarPellicer/extra-attributions/blob/main/Captum_Quantus_Tutorial.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+
+## extra-attributions
 
 I also propose three new (although not particularly intersting) attribution methods:
 
