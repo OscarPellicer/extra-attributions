@@ -28,5 +28,5 @@ quantus>=0.6.0
 lovely-tensors>=0.1.15
 
 # 03_llm_interpretability
-transformer-lens>=2.0
+transformer-lens>=2.0,<4  # 4.0 removed HookedTransformer
 sae-lens>=6.0
